@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kamado Grill</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</head>
+<body>
+<div class="container">
+    <h1>Kamado Grillsession</h1>
+    <img src="{{ url_for('static', filename='kamado.jpeg') }}" alt="Kamadogrill">
+<div class="thermometer">
+    <div class="dial">
+      <div class="needle" style="--rotation: 0deg;"></div>
+    </div>
+    <div class="label">20°C</div>
+  </div>
+
+    <div class="status">
+        <p>Temperatur: <span id="temperatur"></span></p>
+        <p>Gezündet: <span id="gezuendet"></span></p>
+        <p>Ventilator: <span id="ventilator"></span></p>
+        <p>Luftzufuhr: <span id="luftzufuhr"></span></p>
+    </div>
+    <div class="card">
+        <h2 class="card-title">Grillsteuerung</h2>
+        <div>
+            <button id="anzuenden-btn" class="btn btn-primary">Anzünden</button>
+            <button id="ventilator-btn" class="btn btn-secondary">Ventilator an</button>
+            <button id="luftzufuhr-btn" class="btn btn-secondary">Luftzufuhr zu</button>
+        </div>
+    </div>
+    <div class="card">
+        <h2 class="card-title">Simulationssteuerung</h2>
+        <div>
+            <p>Simulation: <span id="simulation-status"></span></p>
+            <button id="simulation-start-btn" class="btn btn-success">Simulation starten</button>
+            <button id="simulation-stop-btn" class="btn btn-danger">Simulation stoppen</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>
