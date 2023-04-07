@@ -4,6 +4,7 @@ from flask import Flask, jsonify, request, render_template
 
 app = Flask(__name__)
 
+
 class KamadoGrill:
     def __init__(self, aussentemperatur=20):
         self.temperatur = aussentemperatur

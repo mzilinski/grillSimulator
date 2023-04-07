@@ -20,6 +20,14 @@ img {
     max-height: 400px;
     height: auto;
     width: auto;
+    margin-bottom: 30px; /* Abstand zwischen Bild und Thermometer/Status hinzugefügt */
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+    margin-bottom: 60px;
 }
 
 .card {
@@ -42,6 +50,7 @@ img {
     position: relative;
     width: 200px;
     height: 200px;
+    margin: auto;
 }
 
 .dial {
@@ -65,6 +74,23 @@ img {
     transition: transform 0.5s ease;
 }
 
+.scale {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.tick {
+    position: absolute;
+    font-size: 12px;
+    transform-origin: center center;
+    white-space: nowrap;
+}
+
 .label {
     position: absolute;
     bottom: -20px;
@@ -73,3 +99,11 @@ img {
     font-family: Arial, sans-serif;
     font-size: 14px;
 }
+
+.col-md-6 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+

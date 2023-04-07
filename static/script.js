@@ -97,8 +97,37 @@ function handleSimulationStop() {
     });
 }
 
+// Füge die folgende Funktion hinzu, um die Tick-Labels der Skala zu positionieren
+function positionTicks() {
+    const ticks = document.querySelectorAll('.tick');
+    const dialRadius = 100; // Radius des Zifferblatts (50% der Größe)
+
+    ticks.forEach((tick) => {
+        const temp = parseInt(tick.getAttribute('data-temp'), 10);
+        const minTemp = 20;
+        const maxTemp = 500;
+        const minRotation = 20;
+        const maxRotation = 180;
+        const rotation = ((temp - minTemp) / (maxTemp - minTemp)) * (maxRotation - minRotation) + minRotation;
+        const angle = (rotation - 180) * (Math.PI / 180);
+
+        // Anpassung der Tick-Label-Position, um sie näher am Thermometerkreis zu platzieren
+        const tickRadius = dialRadius - 15;
+        const x = dialRadius + tickRadius * Math.cos(angle);
+        const y = dialRadius + tickRadius * Math.sin(angle) - 2 * dialRadius;
+
+        const textRotation = rotation > 90 ? rotation - 180 : rotation;
+
+        tick.style.transform = `translate(-50%, -50%) rotate(${textRotation}deg)`;
+        tick.style.left = `${x}px`;
+        tick.style.top = `${y}px`;
+    });
+}
+
+
 $(document).ready(function () {
-updateGrillStatus();
+    updateGrillStatus();
+    positionTicks();
     setInterval(updateGrillStatus, 1000);
 
     $('#anzuenden-btn').click(handleIgnition);

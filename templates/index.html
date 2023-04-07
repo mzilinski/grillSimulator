@@ -14,18 +14,34 @@
 <div class="container">
     <h1>Kamado Grillsession</h1>
     <img src="{{ url_for('static', filename='kamado.jpeg') }}" alt="Kamadogrill">
-<div class="thermometer">
-    <div class="dial">
-      <div class="needle" style="--rotation: 0deg;"></div>
-    </div>
-    <div class="label">20°C</div>
-  </div>
-
-    <div class="status">
-        <p>Temperatur: <span id="temperatur"></span></p>
-        <p>Gezündet: <span id="gezuendet"></span></p>
-        <p>Ventilator: <span id="ventilator"></span></p>
-        <p>Luftzufuhr: <span id="luftzufuhr"></span></p>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="thermometer">
+                <h2 class="card-title">Thermometer</h2>
+                <div class="dial">
+                    <div class="needle" style="--rotation: 0deg;"></div>
+                </div>
+                <div class="label">20°C</div>
+                <div class="scale">
+                    <div class="tick" data-temp="50">50</div>
+                    <div class="tick" data-temp="100">100</div>
+                    <div class="tick" data-temp="150">150</div>
+                    <div class="tick" data-temp="200">200</div>
+                    <div class="tick" data-temp="250">250</div>
+                    <div class="tick" data-temp="300">300</div>
+                    <div class="tick" data-temp="350">350</div>
+                    <div class="tick" data-temp="400">400</div>
+                    <div class="tick" data-temp="450">450</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="status">
+                <p>Gezündet: <span id="gezuendet"></span></p>
+                <p>Ventilator: <span id="ventilator"></span></p>
+                <p>Luftzufuhr: <span id="luftzufuhr"></span></p>
+            </div>
+        </div>
     </div>
     <div class="card">
         <h2 class="card-title">Grillsteuerung</h2>
