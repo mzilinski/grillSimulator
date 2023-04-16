@@ -97,7 +97,6 @@ function handleSimulationStop() {
     });
 }
 
-// Füge die folgende Funktion hinzu, um die Tick-Labels der Skala zu positionieren
 function positionTicks() {
     const ticks = document.querySelectorAll('.tick');
     const dialRadius = 100; // Radius des Zifferblatts (50% der Größe)
@@ -114,7 +113,7 @@ function positionTicks() {
         // Anpassung der Tick-Label-Position, um sie näher am Thermometerkreis zu platzieren
         const tickRadius = dialRadius - 15;
         const x = dialRadius + tickRadius * Math.cos(angle);
-        const y = dialRadius + tickRadius * Math.sin(angle) - 2 * dialRadius;
+        const y = dialRadius + tickRadius * Math.sin(angle) - ~~(1.8 * dialRadius);
 
         const textRotation = rotation > 90 ? rotation - 180 : rotation;
 
