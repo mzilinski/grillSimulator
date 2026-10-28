@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kamado-Grillsimulator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+  <script type="module" src="/static/app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <h1>Kamado</h1>
+    <div class="clock">
+      <span class="clock-time" id="sim-time">0:00</span>
+      <span class="connection" id="connection" data-state="connecting">Verbinde …</span>
+    </div>
+    <div class="time-controls">
+      <div class="segmented" id="speeds" role="radiogroup" aria-label="Zeitraffer"></div>
+      <button class="ghost" id="pause-btn" type="button">Pausieren</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="gauge-area" aria-label="Domthermometer">
+      <div class="glow" aria-hidden="true"></div>
+      <svg class="gauge" id="gauge" viewBox="0 0 400 400" role="img" aria-labelledby="gauge-label">
+        <g id="gauge-ticks"></g>
+        <path id="gauge-heat" class="gauge-heat" />
+        <g id="setpoint-marker" class="setpoint-marker" hidden>
+          <path d="M200 26 l-7 -14 h14 z" />
+        </g>
+        <g id="needle" class="needle">
+          <line x1="200" y1="200" x2="200" y2="62" />
+          <circle cx="200" cy="200" r="11" />
+        </g>
+      </svg>
+      <div class="readout">
+        <output class="readout-temp" id="gauge-label"><span id="temp">20</span><span class="unit">°C</span></output>
+        <p class="readout-state" id="fire-state">Kalt – Kohle anzünden, um loszulegen.</p>
+      </div>
+
+      <dl class="vitals">
+        <div>
+          <dt>Kohle</dt>
+          <dd><span id="fuel">2,5</span> kg</dd>
+          <dd class="sub" id="fuel-left">&nbsp;</dd>
+        </div>
+        <div>
+          <dt>Glut</dt>
+          <dd><span id="ember">0</span> %</dd>
+          <dd class="sub" id="burn">&nbsp;</dd>
+        </div>
+        <div class="probe" id="probe" data-empty="true">
+          <dt id="probe-name">Kerntemperatur</dt>
+          <dd><span id="core">–</span><span id="core-unit"> °C</span></dd>
+          <dd class="sub" id="core-target">Kein Grillgut aufgelegt</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="panel" aria-label="Grillsteuerung">
+      <div class="panel-section fire-actions">
+        <button class="primary" id="ignite-btn" type="button">Anzünden</button>
+        <button id="lid-btn" type="button" aria-pressed="false">Deckel öffnen</button>
+        <button id="fuel-btn" type="button">500 g nachlegen</button>
+      </div>
+
+      <div class="panel-section">
+        <h2>Lüftung</h2>
+        <label class="slider">
+          <span>Zuluft unten</span>
+          <input type="range" id="lower-vent" min="0" max="100" step="1" value="50">
+          <output for="lower-vent" id="lower-vent-out">50 %</output>
+        </label>
+        <label class="slider">
+          <span>Abluft oben</span>
+          <input type="range" id="upper-vent" min="0" max="100" step="1" value="50">
+          <output for="upper-vent" id="upper-vent-out">50 %</output>
+        </label>
+        <p class="hint">Weniger Luft heißt weniger Glut – Änderungen wirken erst nach ein paar Minuten.</p>
+      </div>
+
+      <div class="panel-section">
+        <div class="section-head">
+          <h2>Ventilator</h2>
+          <label class="switch">
+            <input type="checkbox" id="auto-fan">
+            <span>Temperatur regeln</span>
+          </label>
+        </div>
+        <label class="slider" id="fan-row">
+          <span>Leistung</span>
+          <input type="range" id="fan" min="0" max="100" step="1" value="0">
+          <output for="fan" id="fan-out">0 %</output>
+        </label>
+        <label class="slider" id="setpoint-row" hidden>
+          <span>Zieltemperatur</span>
+          <input type="range" id="setpoint" min="60" max="400" step="5" value="110">
+          <output for="setpoint" id="setpoint-out">110 °C</output>
+        </label>
+        <p class="hint" id="fan-hint">Der Ventilator bläst Luft durch die Zuluft. Mit Regelung hält er die Zieltemperatur selbst.</p>
+      </div>
+
+      <div class="panel-section">
+        <h2>Grillgut</h2>
+        <div class="meat-choice" id="meat-choice"></div>
+      </div>
+
+      <div class="panel-section reset">
+        <button class="ghost" id="reset-btn" type="button">Neu starten</button>
+      </div>
+    </section>
+
+    <section class="history" aria-label="Temperaturverlauf">
+      <div class="history-head">
+        <h2>Verlauf</h2>
+        <ul class="legend">
+          <li class="l-dome">Garraum</li>
+          <li class="l-core">Kern</li>
+          <li class="l-fan">Ventilator</li>
+        </ul>
+      </div>
+      <canvas id="chart" height="240"></canvas>
+      <p class="chart-empty" id="chart-empty">Der Verlauf erscheint, sobald die Simulation läuft.</p>
+    </section>
+
+    <section class="log" aria-label="Protokoll">
+      <h2>Protokoll</h2>
+      <ol id="log" aria-live="polite"></ol>
+    </section>
+  </main>
+</body>
+</html>
