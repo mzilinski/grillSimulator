@@ -24,12 +24,15 @@
   </header>
 
   <main class="layout">
-    <section class="gauge-area" aria-label="Domthermometer">
+    <section class="gauge-area" aria-label="Grill">
+      <div class="stage">
+      <svg class="kamado" id="kamado" viewBox="0 0 360 400" role="img" aria-label="Querschnitt des Kamado mit Glut, Lüftungen und Grillgut"></svg>
+      <div class="dial">
       <div class="glow" aria-hidden="true"></div>
       <svg class="gauge" id="gauge" viewBox="0 0 400 400" role="img" aria-labelledby="gauge-label">
         <g id="gauge-ticks"></g>
         <path id="gauge-heat" class="gauge-heat" />
-        <g id="setpoint-marker" class="setpoint-marker" hidden>
+        <g id="setpoint-marker" class="setpoint-marker" style="display: none">
           <path d="M200 26 l-7 -14 h14 z" />
         </g>
         <g id="needle" class="needle">
@@ -40,6 +43,8 @@
       <div class="readout">
         <output class="readout-temp" id="gauge-label"><span id="temp">20</span><span class="unit">°C</span></output>
         <p class="readout-state" id="fire-state">Kalt – Kohle anzünden, um loszulegen.</p>
+      </div>
+      </div>
       </div>
 
       <dl class="vitals">

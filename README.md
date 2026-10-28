@@ -37,6 +37,7 @@ Grobe Richtwerte ohne Ventilator: 15 % Lüftung ≈ 110 °C, 20 % ≈ 145 °C,
 | `grillsim/simulation.py` | Zeitraffer, Verlauf, Befehle |
 | `grillsim/app.py` | FastAPI-Server, WebSocket `/ws`, REST `/api/state` und `/api/command` |
 | `grillsim/static/` | Oberfläche (ohne Build-Schritt, keine JS-Abhängigkeiten) |
+| `grillsim/static/kamado.js` | Animierter Kamado-Querschnitt: Glut, Lüftungen, Ventilator, Deckel, Rauch, Grillgut |
 
 Befehle sind JSON-Objekte wie `{"action": "lower_vent", "value": 0.3}`, entweder
 über den WebSocket oder per `POST /api/command`.

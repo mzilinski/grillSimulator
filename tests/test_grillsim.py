@@ -1,5 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
+from starlette.websockets import WebSocketDisconnect
 
 from grillsim.app import app
 from grillsim.controller import FanController
@@ -107,3 +108,12 @@ def test_websocket_streams_state_and_accepts_commands():
             assert msg["grill"]["lit"]
         assert client.get("/api/state").json()["grill"]["lit"]
         assert client.get("/").status_code == 200
+
+
+def test_websocket_rejects_foreign_origin():
+    with TestClient(app) as client:
+        with pytest.raises(WebSocketDisconnect):
+            with client.websocket_connect("/ws", headers={"origin": "https://evil.example"}):
+                pass
+        with client.websocket_connect("/ws", headers={"origin": "http://testserver"}) as ws:
+            assert ws.receive_json()["type"] == "history"

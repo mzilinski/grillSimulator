@@ -6,6 +6,7 @@ import asyncio
 import time
 from contextlib import asynccontextmanager
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse
@@ -72,8 +73,19 @@ async def command(cmd: dict) -> dict:
     return {"ok": True}
 
 
+def same_origin(ws: WebSocket) -> bool:
+    """Fremde Webseiten im selben Browser dürfen den Grill nicht steuern."""
+    origin = ws.headers.get("origin")
+    if origin is None:  # kein Browser, z. B. ein Skript
+        return True
+    return urlsplit(origin).netloc == ws.headers.get("host")
+
+
 @app.websocket("/ws")
 async def websocket(ws: WebSocket) -> None:
+    if not same_origin(ws):
+        await ws.close(code=1008)
+        return
     await ws.accept()
     clients.add(ws)
     await ws.send_json({"type": "history", "samples": list(sim.history)})

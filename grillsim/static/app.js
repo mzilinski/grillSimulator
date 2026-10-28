@@ -1,3 +1,5 @@
+import { buildKamado, renderKamado } from "./kamado.js";
+
 const $ = (id) => document.getElementById(id);
 
 const GAUGE = { min: 0, max: 500, sweep: 270, cx: 200, cy: 200, r: 168 };
@@ -76,7 +78,8 @@ function renderGauge(temp, setpoint) {
   const start = -GAUGE.sweep / 2;
   $("gauge-heat").setAttribute("d", a - start < 0.5 ? "" : arcPath(start, a, GAUGE.r - 26));
   const marker = $("setpoint-marker");
-  marker.hidden = setpoint == null;
+  // `hidden` wirkt auf SVG-Elemente nicht
+  marker.style.display = setpoint == null ? "none" : "";
   if (setpoint != null) marker.style.transform = `rotate(${angleFor(setpoint)}deg)`;
 }
 
@@ -217,6 +220,7 @@ function render() {
   $("temp").textContent = Math.round(g.temperature);
   $("fire-state").textContent = describeFire(g);
   renderGauge(g.temperature, state.auto_fan ? state.setpoint : null);
+  renderKamado(kamado, g, angleFor(g.temperature));
   document.documentElement.style.setProperty("--heat", Math.min(1, g.burn_rate / 0.25).toFixed(3));
 
   $("fuel").textContent = kg(g.fuel_g);
@@ -351,6 +355,7 @@ function bindSlider(id, action, toValue, suffix = " %") {
 }
 
 buildGauge();
+const kamado = buildKamado($("kamado"));
 bindSlider("lower-vent", "lower_vent", (v) => v / 100);
 bindSlider("upper-vent", "upper_vent", (v) => v / 100);
 bindSlider("fan", "fan", (v) => v / 100);
