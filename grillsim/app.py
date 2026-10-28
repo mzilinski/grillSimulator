@@ -11,11 +11,14 @@ from urllib.parse import urlsplit
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from .simulation import CommandError, Simulation
 
 STATIC = Path(__file__).parent / "static"
 TICK_S = 0.25
+# Nur lokale Hostnamen: schützt vor DNS-Rebinding, bei dem eine fremde Domain auf 127.0.0.1 zeigt
+LOCAL_HOSTS = ["127.0.0.1", "localhost"]
 
 sim = Simulation()
 clients: set[WebSocket] = set()
@@ -51,6 +54,7 @@ async def lifespan(_: FastAPI):
 
 
 app = FastAPI(title="Kamado-Grillsimulator", lifespan=lifespan)
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=LOCAL_HOSTS)
 app.mount("/static", StaticFiles(directory=STATIC), name="static")
 
 
@@ -78,7 +82,7 @@ def same_origin(ws: WebSocket) -> bool:
     origin = ws.headers.get("origin")
     if origin is None:  # kein Browser, z. B. ein Skript
         return True
-    return urlsplit(origin).netloc == ws.headers.get("host")
+    return urlsplit(origin).hostname in LOCAL_HOSTS
 
 
 @app.websocket("/ws")

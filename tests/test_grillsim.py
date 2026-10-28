@@ -97,8 +97,8 @@ def test_invalid_commands_are_rejected():
 
 
 def test_websocket_streams_state_and_accepts_commands():
-    with TestClient(app) as client:
-        with client.websocket_connect("/ws") as ws:
+    with TestClient(app, base_url="http://127.0.0.1:5007") as client:
+        with client.websocket_connect("ws://127.0.0.1:5007/ws") as ws:
             assert ws.receive_json()["type"] == "history"
             ws.send_json({"action": "ignite"})
             for _ in range(10):
@@ -111,9 +111,19 @@ def test_websocket_streams_state_and_accepts_commands():
 
 
 def test_websocket_rejects_foreign_origin():
-    with TestClient(app) as client:
+    with TestClient(app, base_url="http://127.0.0.1:5007") as client:
         with pytest.raises(WebSocketDisconnect):
-            with client.websocket_connect("/ws", headers={"origin": "https://evil.example"}):
+            with client.websocket_connect("ws://127.0.0.1:5007/ws", headers={"origin": "https://evil.example"}):
                 pass
-        with client.websocket_connect("/ws", headers={"origin": "http://testserver"}) as ws:
+        with client.websocket_connect("ws://127.0.0.1:5007/ws", headers={"origin": "http://127.0.0.1:5007"}) as ws:
             assert ws.receive_json()["type"] == "history"
+
+
+def test_dns_rebinding_is_blocked():
+    # fremde Domain, die per DNS auf 127.0.0.1 zeigt: Host und Origin passen zueinander
+    with TestClient(app, base_url="http://evil.example:5007") as client:
+        assert client.get("/api/state").status_code == 400
+        assert client.post("/api/command", json={"action": "ignite"}).status_code == 400
+        with pytest.raises(WebSocketDisconnect):
+            with client.websocket_connect("ws://evil.example:5007/ws", headers={"origin": "http://evil.example:5007"}):
+                pass
